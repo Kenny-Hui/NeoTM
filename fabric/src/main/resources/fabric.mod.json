@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "mtrtm",
+	"version": "${version}",
+	"name": "NeoTM",
+	"description": "Add commands that allows you to have better control of trains in the Minecraft Transit Railway Mod",
+	"authors": [
+		"LX86"
+	],
+	"contact": {
+		"issues": "https://github.com/Kenny-Hui/NeoTM/issues"
+	},
+	"license": "MIT",
+	"icon": "icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.lx862.mtrtm.NeoTMFabric"
+		]
+	},
+	"mixins": [
+		"mtrtm-common.mixins.json"
+	],
+	"depends": {
+		"fabric": "*",
+		"minecraft": ">=1.21 <=1.21.1",
+		"mtr": ">=300.6.1"
+	}
+}

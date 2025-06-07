@@ -1,0 +1,51 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+run_client/
+run_server/
+latest.log
+Keys.java
+BlockEntityExtension.java
+RandomSource.java
+UnknownPacketMixin.java
+!en_us.json
+fabric/server
+neoforge/server
+version.js
+
+.architectury-transformer/
+
+/build.properties
+
+# rhino js engine
+rhino/src/main/java

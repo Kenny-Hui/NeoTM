@@ -1,0 +1,95 @@
+plugins {
+	id 'com.gradleup.shadow'
+}
+
+architectury {
+	platformSetupLoomIde()
+	fabric()
+}
+
+configurations {
+	common {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentFabric.extendsFrom common
+	shadowBundle {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+}
+
+dependencies {
+	modImplementation "net.fabricmc:fabric-loader:${rootProject.properties.fabric_loader_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.properties.fabric_api_version}"
+//	modApi "com.terraformersmc:modmenu:${rootProject.properties.mod_menu_version}"
+
+	common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+	shadowBundle(project(path: ':common', configuration: 'transformProductionFabric'))
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+shadowJar {
+	configurations = [project.configurations.shadowBundle]
+	archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+	inputFile.set shadowJar.archiveFile
+	dependsOn shadowJar
+	archiveClassifier = null
+}
+
+components.java {
+	withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+		skip()
+	}
+}
+
+tasks.register("moveFabricBuilds") {
+	doLast {
+		delete fileTree("../build/release").matching {
+			include "**/fabric*"
+		}
+		delete fileTree("../build/libs").matching {
+			include "**/fabric*"
+		}
+		delete fileTree("../build/latest").matching {
+			include "**/fabric*"
+		}
+		copy {
+			from "build/libs"
+			include "*${rootProject.properties.minecraft_version}.jar"
+			into "../build/release"
+			rename "(.+)", "${rootProject.name}-\$1"
+		}
+		copy {
+			from "build/libs"
+			into "../build/latest"
+			rename { fileName -> "${rootProject.name}-${fileName.replace(rootProject.mod_version, "latest")}" }
+		}
+		copy {
+			from "build/libs"
+			include "*${rootProject.minecraft_version}-dev-shadow.jar"
+			into "../build/libs"
+			rename "(.+)", "${rootProject.name}-\$1"
+		}
+	}
+}
+
+afterEvaluate {
+	for (def task in it.tasks) {
+		if (task == tasks.build) {
+			task.finalizedBy tasks.moveFabricBuilds
+		}
+	}
+}

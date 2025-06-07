@@ -1,0 +1,70 @@
+plugins {
+	id "dev.architectury.loom" version "1.10-SNAPSHOT" apply false
+	id "architectury-plugin" version "3.4-SNAPSHOT"
+	id "com.gradleup.shadow" version "8.3.6" apply false
+}
+
+architectury {
+	minecraft = project.properties.minecraft_version
+}
+
+subprojects {
+	apply plugin: "dev.architectury.loom"
+	apply plugin: 'architectury-plugin'
+
+	loom {
+		silentMojangMappingsLicense()
+
+		mixin {
+			useLegacyMixinAp = true
+//			defaultRefmapName = "mixins.neotm.refmap.json"
+		}
+	}
+
+	configurations {
+		shadowCommon
+	}
+
+	dependencies {
+		minecraft "com.mojang:minecraft:${rootProject.properties.minecraft_version}"
+		mappings loom.layered() {
+			officialMojangMappings()
+			parchment("org.parchmentmc.data:parchment-${rootProject.properties.parchment_minecraft_version}:${rootProject.properties.parchment_version}@zip")
+		}
+
+		implementation ("mtr:mtr-common:${rootProject.properties.mtr_version}")
+	}
+
+	java {
+		// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+		// if it is present.
+		// If you remove this line, sources will not be generated.
+		withSourcesJar()
+
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 21
+	}
+}
+
+allprojects {
+	version = rootProject.mod_version + "+" + rootProject.properties.minecraft_version
+	group = rootProject.maven_group
+
+	repositories {
+		maven { url "https://maven.neoforged.net/releases/" }
+//		maven { url = "https://jitpack.io/" } // Minecraft-Mod-API-Tools
+//		maven { url = "https://maven.terraformersmc.com/" } // Mod Menu
+		maven { // NeoMTR
+			url = "https://joban.org/maven/"
+			metadataSources { artifact() }
+		}
+		maven {
+			name = 'ParchmentMC'
+			url = 'https://maven.parchmentmc.org'
+		}
+	}
+}

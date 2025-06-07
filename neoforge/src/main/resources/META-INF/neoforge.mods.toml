@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/Kenny-Hui/NeoTM/issues"
+
+[[mods]]
+modId = "mtrtm"
+version = "${version}"
+displayName = "NeoTM"
+authors = "LX86"
+description = "Add commands that allows you to have better control of trains in the Minecraft Transit Railway Mod"
+logoFile = "icon.png"
+
+[[dependencies.mtrtm]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21,1.21.1]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mtrtm]]
+modId = "mtr"
+reason = "This addon requires NeoMTR. (Not MTR 3 nor MTR 4!)"
+type = "required"
+versionRange = "[300.6.1,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "mtrtm-common.mixins.json"
