@@ -18,9 +18,9 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build Fabric
-        run: ./gradlew fabric:build"
+        run: ./gradlew fabric:build
       - name: Build NeoForge
-        run: ./gradlew neoforge:build"
+        run: ./gradlew neoforge:build
       - name: Get commit SHA
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
